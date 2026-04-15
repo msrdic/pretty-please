@@ -37,9 +37,7 @@ def completion(*, messages: list[dict], **kwargs):
     try:
         import litellm
     except ImportError as exc:
-        raise ImportError(
-            "litellm package is required: pip install litellm"
-        ) from exc
+        raise ImportError("litellm package is required: pip install litellm") from exc
     return litellm.completion(messages=_polite_messages(messages), **kwargs)
 
 
@@ -48,7 +46,5 @@ async def acompletion(*, messages: list[dict], **kwargs):
     try:
         import litellm
     except ImportError as exc:
-        raise ImportError(
-            "litellm package is required: pip install litellm"
-        ) from exc
+        raise ImportError("litellm package is required: pip install litellm") from exc
     return await litellm.acompletion(messages=_polite_messages(messages), **kwargs)

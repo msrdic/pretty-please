@@ -37,7 +37,10 @@ _BYTE_TONE = {v: k for k, v in _TONE_BYTE.items()}
 
 
 def _log_path() -> Path:
-    return Path(os.environ.get("PRETTY_PLEASE_STATS_DIR", Path.home() / ".pretty-please")) / "stats.log"
+    return (
+        Path(os.environ.get("PRETTY_PLEASE_STATS_DIR", Path.home() / ".pretty-please"))
+        / "stats.log"
+    )
 
 
 def record(tone: str) -> None:

@@ -13,9 +13,13 @@ def main() -> None:
         description="Politely injects PLEASE into your LLM prompts.",
     )
     sub = parser.add_subparsers(dest="command")
-    install_cmd = sub.add_parser("install-hook", help="Install the UserPromptSubmit hook")
+    install_cmd = sub.add_parser(
+        "install-hook", help="Install the UserPromptSubmit hook"
+    )
     install_cmd.add_argument(
-        "--codex", action="store_true", help="Install for Codex CLI (~/.codex/hooks.json) instead of Claude Code"
+        "--codex",
+        action="store_true",
+        help="Install for Codex CLI (~/.codex/hooks.json) instead of Claude Code",
     )
     install_cmd.add_argument(
         "--path", metavar="FILE", help="Override the default config file path"
@@ -33,6 +37,7 @@ def main() -> None:
         install(path)
     elif args.command == "stats":
         from pretty_please.stats import show
+
         show()
     else:
         parser.print_help()

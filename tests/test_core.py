@@ -1,6 +1,5 @@
 """Tests for pretty_please.core — tone detection and transformation."""
 
-import pytest
 from pretty_please.core import detect_tone, transform
 
 

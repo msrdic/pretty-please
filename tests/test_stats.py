@@ -56,9 +56,9 @@ class TestTrackedTransform:
         assert result.startswith("Please, ")
 
     def test_records_tone(self):
-        tracked_transform("List the planets.")   # curt
-        tracked_transform("I need help.")         # neutral
-        tracked_transform("Please help me.")      # polite
+        tracked_transform("List the planets.")  # curt
+        tracked_transform("I need help.")  # neutral
+        tracked_transform("Please help me.")  # polite
         data = get_stats()
         assert data["total"] == 3
         assert data["transformed"] == 2
