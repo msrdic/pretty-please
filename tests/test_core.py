@@ -82,3 +82,9 @@ class TestTransform:
     def test_idempotent_polite(self):
         prompt = "Could you summarize this article?"
         assert transform(transform(prompt)) == transform(prompt)
+
+    def test_empty_string_passthrough(self):
+        assert transform("") == ""
+
+    def test_whitespace_only_passthrough(self):
+        assert transform("   ") == "   "

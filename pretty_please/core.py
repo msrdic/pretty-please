@@ -70,6 +70,9 @@ def transform(prompt: str) -> str:
     - curt     → "Please, " prepended
     - neutral  → ", please" appended (with smart punctuation handling)
     """
+    if not prompt.strip():
+        return prompt
+
     tone = detect_tone(prompt)
 
     if tone == "polite":
