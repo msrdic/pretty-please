@@ -83,13 +83,7 @@ def install(settings_path: Path | None = None) -> Path:
     )
 
     if not already_installed:
-        user_prompt_hooks.append(
-            {
-                "hooks": [
-                    {"type": "command", "command": command}
-                ]
-            }
-        )
+        user_prompt_hooks.append({"hooks": [{"type": "command", "command": command}]})
         settings_path.write_text(json.dumps(settings, indent=2))
         print(f"pretty-please hook installed in {settings_path}")
     else:
