@@ -52,9 +52,13 @@ class TestDetectTone:
         )
         assert tone == "neutral"
 
-    def test_neutral_with_modal(self):
-        # Has imperative verb but also has a modal → not curt
+    def test_polite_can_you_write(self):
+        # "can you" matches _POLITE_PATTERNS directly
         assert detect_tone("Can you write a sonnet about autumn?") == "polite"
+
+    def test_neutral_imperative_with_modal(self):
+        # Short imperative verb but softened by a modal → neutral, not curt
+        assert detect_tone("Write me something, it should be short") == "neutral"
 
 
 class TestTransform:
