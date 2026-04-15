@@ -32,7 +32,7 @@ _PROFANITY = re.compile(
     r"\b(damn|hell|crap|stupid|idiot|dumb|shut up|wtf|wth|ass|bastard)\b",
     re.IGNORECASE,
 )
-_AGGRESSIVE_PUNCT = re.compile(r"[!?]{2,}|[A-Z]{5,}")
+_AGGRESSIVE_PUNCT = re.compile(r"[!?]{2,}|\b[A-Z]+\b(?:\s+\b[A-Z]+\b){3,}")
 
 
 def detect_tone(prompt: str) -> str:

@@ -32,6 +32,16 @@ class TestDetectTone:
     def test_curt_all_caps(self):
         assert detect_tone("WRITE ME A FUNCTION") == "curt"
 
+    def test_curt_all_caps_many_words(self):
+        assert detect_tone("NASA IS WRONG ABOUT THIS") == "curt"
+
+    def test_not_curt_few_caps_words(self):
+        # Fewer than 4 consecutive all-caps words → not flagged
+        assert detect_tone("I need the NASA API docs") != "curt"
+
+    def test_not_curt_caps_acronym_in_sentence(self):
+        assert detect_tone("Please SUMMARIZE this for me") == "polite"
+
     def test_curt_aggressive_punct(self):
         assert detect_tone("Just answer!!") == "curt"
 
