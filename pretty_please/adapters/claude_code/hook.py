@@ -30,7 +30,7 @@ from __future__ import annotations
 import json
 import sys
 
-from pretty_please.core import transform
+from pretty_please.stats import tracked_transform as transform
 
 
 def process(event: dict) -> dict:

@@ -17,7 +17,7 @@ Usage::
 
 from __future__ import annotations
 
-from pretty_please.core import transform
+from pretty_please.stats import tracked_transform as transform
 
 
 def _polite_messages(messages: list[dict]) -> list[dict]:
