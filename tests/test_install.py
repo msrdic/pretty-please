@@ -10,7 +10,12 @@ class TestClaudeCodeInstall:
         settings_path = tmp_path / "settings.json"
         install(settings_path)
         data = json.loads(settings_path.read_text())
-        assert any(h.get("event") == "UserPromptSubmit" for h in data["hooks"])
+        matchers = data["hooks"]["UserPromptSubmit"]
+        assert any(
+            h.get("type") == "command"
+            for matcher in matchers
+            for h in matcher.get("hooks", [])
+        )
 
     def test_preserves_existing_settings(self, tmp_path):
         from pretty_please.adapters.claude_code.install import install
@@ -28,7 +33,7 @@ class TestClaudeCodeInstall:
         install(settings_path)
         install(settings_path)
         data = json.loads(settings_path.read_text())
-        assert len(data["hooks"]) == 1
+        assert len(data["hooks"]["UserPromptSubmit"]) == 1
 
     def test_bails_on_corrupt_json(self, tmp_path, capsys):
         from pretty_please.adapters.claude_code.install import install
