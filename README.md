@@ -110,6 +110,8 @@ pretty-please install-hook
 
 Writes the hook into `~/.claude/settings.json`. Every prompt you type in Claude Code will be politely transformed before it's sent.
 
+> **Note:** the installer records the Python interpreter that ran it (`sys.executable`). If you installed pretty-please into a virtualenv, make sure that virtualenv is active when you run `install-hook`, or the hook will fail when the venv isn't active.
+
 Use `--path` to install into a non-default profile directory:
 
 ```bash
