@@ -28,7 +28,7 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
-    environment: pypi-publish
+    environment: pypi
     permissions:
       id-token: write  # required for OIDC trusted publisher
 
