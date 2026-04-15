@@ -12,13 +12,19 @@ def main() -> None:
         description="Politely injects PLEASE into your LLM prompts.",
     )
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("install-hook", help="Install the Claude Code UserPromptSubmit hook")
+    install_cmd = sub.add_parser("install-hook", help="Install the UserPromptSubmit hook")
+    install_cmd.add_argument(
+        "--codex", action="store_true", help="Install for Codex CLI (~/.codex/hooks.json) instead of Claude Code"
+    )
     sub.add_parser("stats", help="Show prompt transformation stats")
 
     args = parser.parse_args()
 
     if args.command == "install-hook":
-        from pretty_please.adapters.claude_code.install import install
+        if args.codex:
+            from pretty_please.adapters.codex.install import install
+        else:
+            from pretty_please.adapters.claude_code.install import install
         install()
     elif args.command == "stats":
         from pretty_please.stats import show
