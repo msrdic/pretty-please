@@ -37,21 +37,19 @@ from __future__ import annotations
 import json
 import sys
 
-from pretty_please.core import detect_tone
-from pretty_please.stats import tracked_transform
+from pretty_please.core import detect_tone, transform
+from pretty_please.stats import record
 
 
 def process(event: dict) -> dict:
     prompt = event.get("prompt", "")
     tone = detect_tone(prompt)
+    record(tone)
 
     if tone == "polite":
-        # Already polite — no context needed, but still record the stat
-        from pretty_please.stats import record
-        record(tone)
         return {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit"}}
 
-    polite = tracked_transform(prompt)
+    polite = transform(prompt)
     return {
         "hookSpecificOutput": {
             "hookEventName": "UserPromptSubmit",
