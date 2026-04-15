@@ -1,6 +1,5 @@
 """Tests for pretty_please adapters (no real API calls)."""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 
@@ -11,7 +10,6 @@ class TestAnthropicAdapter:
 
         with patch.dict("sys.modules", {"anthropic": mock_anthropic}):
             from pretty_please.adapters.anthropic import (
-                PrettyAnthropicClient,
                 _polite_messages,
             )
 
@@ -89,9 +87,12 @@ class TestLiteLLMAdapter:
         with patch.dict("sys.modules", {"litellm": mock_litellm}):
             from pretty_please.adapters import litellm as adapter
             import importlib
+
             importlib.reload(adapter)
 
-            adapter.completion(model="gpt-4o", messages=[{"role": "user", "content": "List planets."}])
+            adapter.completion(
+                model="gpt-4o", messages=[{"role": "user", "content": "List planets."}]
+            )
             call_messages = mock_litellm.completion.call_args[1]["messages"]
             assert call_messages[0]["content"].startswith("Please, ")
 
@@ -136,7 +137,10 @@ class TestCodexHook:
     def test_polite_prompt_has_no_additional_context(self):
         from pretty_please.adapters.codex.hook import process
 
-        event = {"hook_event_name": "UserPromptSubmit", "prompt": "Please list the planets."}
+        event = {
+            "hook_event_name": "UserPromptSubmit",
+            "prompt": "Please list the planets.",
+        }
         result = process(event)
         assert "additionalContext" not in result["hookSpecificOutput"]
 

@@ -44,9 +44,7 @@ class _PrettyCompletions:
         self._completions = completions
 
     def create(self, *, messages: list[dict], **kwargs):
-        return self._completions.create(
-            messages=_polite_messages(messages), **kwargs
-        )
+        return self._completions.create(messages=_polite_messages(messages), **kwargs)
 
 
 class _PrettyChat:
@@ -61,9 +59,7 @@ class PrettyOpenAIClient:
         try:
             import openai
         except ImportError as exc:
-            raise ImportError(
-                "openai package is required: pip install openai"
-            ) from exc
+            raise ImportError("openai package is required: pip install openai") from exc
         self._client = openai.OpenAI(**kwargs)
         self.chat = _PrettyChat(self._client.chat)
 

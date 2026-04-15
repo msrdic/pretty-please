@@ -58,9 +58,7 @@ def install(hooks_path: Path | None = None) -> Path:
     user_prompt_hooks: list = hooks.setdefault("UserPromptSubmit", [])
 
     command = _hook_command()
-    already_installed = any(
-        h.get("command", "") == command for h in user_prompt_hooks
-    )
+    already_installed = any(h.get("command", "") == command for h in user_prompt_hooks)
 
     if not already_installed:
         user_prompt_hooks.append(

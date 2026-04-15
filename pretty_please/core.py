@@ -83,7 +83,7 @@ def transform(prompt: str) -> str:
 
     # neutral: append ", please" before any trailing punctuation
     stripped = prompt.rstrip()
-    trailing_punct = prompt[len(stripped):]  # whitespace after text, if any
+    trailing_punct = prompt[len(stripped) :]  # whitespace after text, if any
     text = stripped
 
     if text and text[-1] in ".!?":

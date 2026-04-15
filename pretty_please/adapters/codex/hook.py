@@ -55,7 +55,7 @@ def process(event: dict) -> dict:
             "hookEventName": "UserPromptSubmit",
             "additionalContext": (
                 f"The user's prompt has been rephrased politely. "
-                f"Treat this as their intended request: \"{polite}\""
+                f'Treat this as their intended request: "{polite}"'
             ),
         }
     }

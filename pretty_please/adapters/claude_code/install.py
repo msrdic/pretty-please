@@ -60,9 +60,7 @@ def install(settings_path: Path | None = None) -> Path:
 
     # Check if a pretty-please hook already exists
     command = _hook_command()
-    already_installed = any(
-        hook.get("command", "") == command for hook in hooks
-    )
+    already_installed = any(hook.get("command", "") == command for hook in hooks)
 
     if not already_installed:
         hooks.append(
