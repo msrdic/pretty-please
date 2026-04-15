@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pretty-please"
+name = "pretty-please-llm"
 version = "0.1.0"
 description = "🙏🏼 Politely injects PLEASE into your LLM prompts. Because manners matter (kind of)."
 readme = "README.md"
