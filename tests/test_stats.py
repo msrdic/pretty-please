@@ -1,10 +1,7 @@
 """Tests for pretty_please.stats."""
 
-import json
-import os
 import pytest
-from pathlib import Path
-from pretty_please.stats import record, get_stats, tracked_transform, _defaults
+from pretty_please.stats import record, get_stats, tracked_transform
 
 
 @pytest.fixture(autouse=True)
@@ -40,6 +37,18 @@ class TestRecord:
             record("curt")
         assert get_stats()["by_tone"]["curt"] == 5
 
+    def test_unknown_tone_ignored(self):
+        record("unknown")
+        assert get_stats()["total"] == 0
+
+    def test_log_file_is_binary(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        record("curt")
+        record("neutral")
+        record("polite")
+        data = (tmp_path / "stats.log").read_bytes()
+        assert data == bytes([0x00, 0x01, 0x02])
+
 
 class TestTrackedTransform:
     def test_returns_transformed_prompt(self):
@@ -47,9 +56,9 @@ class TestTrackedTransform:
         assert result.startswith("Please, ")
 
     def test_records_tone(self):
-        tracked_transform("List the planets.")  # curt
-        tracked_transform("I need help with something.")  # neutral
-        tracked_transform("Please help me.")  # polite
+        tracked_transform("List the planets.")   # curt
+        tracked_transform("I need help.")         # neutral
+        tracked_transform("Please help me.")      # polite
         data = get_stats()
         assert data["total"] == 3
         assert data["transformed"] == 2
