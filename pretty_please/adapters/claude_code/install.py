@@ -17,14 +17,12 @@ Or via the CLI entry point (if installed)::
 from __future__ import annotations
 
 import json
-import shutil
 import sys
 from pathlib import Path
 
 
 def _hook_command() -> str:
-    python = shutil.which("python3") or shutil.which("python") or sys.executable
-    return f"{python} -m pretty_please.adapters.claude_code.hook"
+    return f"{sys.executable} -m pretty_please.adapters.claude_code.hook"
 
 
 def install(settings_path: Path | None = None) -> Path:
