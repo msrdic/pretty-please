@@ -50,7 +50,11 @@ def install(hooks_path: Path | None = None) -> Path:
         try:
             config = json.loads(hooks_path.read_text())
         except json.JSONDecodeError:
-            pass
+            print(
+                f"Error: {hooks_path} contains invalid JSON and was left untouched.\n"
+                "pretty-please won't modify a file it can't safely parse — please fix it manually."
+            )
+            return hooks_path
 
     hooks: dict = config.setdefault("hooks", {})
     user_prompt_hooks: list = hooks.setdefault("UserPromptSubmit", [])
