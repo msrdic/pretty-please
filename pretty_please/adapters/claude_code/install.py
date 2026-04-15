@@ -5,11 +5,25 @@ Writes (or updates) ``~/.claude/settings.json`` to register the
 pretty-please hook. Existing settings are preserved; only the hooks
 section is merged.
 
+Claude Code hooks schema::
+
+    {
+        "hooks": {
+            "UserPromptSubmit": [
+                {
+                    "hooks": [
+                        {"type": "command", "command": "<cmd>"}
+                    ]
+                }
+            ]
+        }
+    }
+
 Usage::
 
     python -m pretty_please.adapters.claude_code.install
 
-Or via the CLI entry point (if installed)::
+Or via the CLI entry point::
 
     pretty-please install-hook
 """
@@ -56,20 +70,20 @@ def install(settings_path: Path | None = None) -> Path:
             )
             return settings_path
 
-    hooks: list[dict] = settings.setdefault("hooks", [])
+    hooks: dict = settings.setdefault("hooks", {})
+    user_prompt_hooks: list = hooks.setdefault("UserPromptSubmit", [])
 
-    # Check if a pretty-please hook already exists
     command = _hook_command()
-    already_installed = any(hook.get("command", "") == command for hook in hooks)
+
+    # Check if a pretty-please hook is already present anywhere in the matchers
+    already_installed = any(
+        h.get("command") == command
+        for matcher in user_prompt_hooks
+        for h in matcher.get("hooks", [])
+    )
 
     if not already_installed:
-        hooks.append(
-            {
-                "event": "UserPromptSubmit",
-                "command": command,
-            }
-        )
-        settings["hooks"] = hooks
+        user_prompt_hooks.append({"hooks": [{"type": "command", "command": command}]})
         settings_path.write_text(json.dumps(settings, indent=2))
         print(f"pretty-please hook installed in {settings_path}")
     else:

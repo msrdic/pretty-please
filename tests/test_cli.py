@@ -53,7 +53,12 @@ class TestInstallHookCLI:
         path = tmp_path / "settings.json"
         run("install-hook", "--path", str(path))
         data = json.loads(path.read_text())
-        assert any(h.get("event") == "UserPromptSubmit" for h in data["hooks"])
+        matchers = data["hooks"]["UserPromptSubmit"]
+        assert any(
+            h.get("type") == "command"
+            for matcher in matchers
+            for h in matcher.get("hooks", [])
+        )
 
     def test_install_hook_codex_exits_zero(self, tmp_path):
         path = tmp_path / "hooks.json"
