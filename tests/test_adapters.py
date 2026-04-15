@@ -65,6 +65,37 @@ class TestOpenAIAdapter:
             assert result[1]["content"].startswith("Please, ")
 
 
+class TestLiteLLMAdapter:
+    def test_transforms_user_message(self):
+        from pretty_please.adapters.litellm import _polite_messages
+
+        messages = [{"role": "user", "content": "Explain recursion."}]
+        result = _polite_messages(messages)
+        assert result[0]["content"].startswith("Please, ")
+
+    def test_leaves_system_message_unchanged(self):
+        from pretty_please.adapters.litellm import _polite_messages
+
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Explain recursion."},
+        ]
+        result = _polite_messages(messages)
+        assert result[0]["content"] == "You are a helpful assistant."
+        assert result[1]["content"].startswith("Please, ")
+
+    def test_completion_passes_polite_messages(self):
+        mock_litellm = MagicMock()
+        with patch.dict("sys.modules", {"litellm": mock_litellm}):
+            from pretty_please.adapters import litellm as adapter
+            import importlib
+            importlib.reload(adapter)
+
+            adapter.completion(model="gpt-4o", messages=[{"role": "user", "content": "List planets."}])
+            call_messages = mock_litellm.completion.call_args[1]["messages"]
+            assert call_messages[0]["content"].startswith("Please, ")
+
+
 class TestClaudeCodeHook:
     def test_hook_transforms_prompt(self):
         from pretty_please.adapters.claude_code.hook import process
