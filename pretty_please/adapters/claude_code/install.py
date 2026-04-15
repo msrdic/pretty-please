@@ -52,7 +52,11 @@ def install(settings_path: Path | None = None) -> Path:
         try:
             settings = json.loads(settings_path.read_text())
         except json.JSONDecodeError:
-            pass  # Overwrite corrupt file
+            print(
+                f"Error: {settings_path} contains invalid JSON and was left untouched.\n"
+                "pretty-please won't modify a file it can't safely parse — please fix it manually."
+            )
+            return settings_path
 
     hooks: list[dict] = settings.setdefault("hooks", [])
 
