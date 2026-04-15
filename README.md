@@ -32,15 +32,15 @@ Yin et al. (2024) — ["Should We Respect LLMs?"](https://arxiv.org/abs/2402.145
 ## Installation
 
 ```bash
-pip install pretty-please
+pip install pretty-please-llm
 ```
 
 With SDK extras:
 
 ```bash
-pip install "pretty-please[anthropic]"
-pip install "pretty-please[openai]"
-pip install "pretty-please[litellm]"
+pip install "pretty-please-llm[anthropic]"
+pip install "pretty-please-llm[openai]"
+pip install "pretty-please-llm[litellm]"
 ```
 
 ---
