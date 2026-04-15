@@ -35,7 +35,7 @@ dev = [
 ]
 
 [project.scripts]
-pretty-please = "pretty_please.adapters.claude_code.install:main"
+pretty-please = "pretty_please.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/msrdic/pretty-please"
