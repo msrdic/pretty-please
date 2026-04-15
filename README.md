@@ -21,15 +21,11 @@ transform("Please could you explain this?")
 
 ## Does this actually work?
 
-**Honest answer: sort of, and it depends on the model.**
+**Probably not in the way you'd hope.**
 
-The research on this is genuinely interesting:
+Yin et al. (2024) — ["Should We Respect LLMs?"](https://arxiv.org/abs/2402.14531) (arXiv:2402.14531) — found that *rudeness* reliably hurts LLM performance. But the flip side isn't symmetrical: adding *please* showed no consistent improvement on frontier models like GPT-4. The paper's main takeaway is really "avoid being rude," not "be polite and get better answers."
 
-- **Yin et al. (2024) — "Should We Respect LLMs? Investigating Social Primitives in Human-LLM Interactions"** ([arXiv:2402.14531](https://arxiv.org/abs/2402.14531)) found that *rudeness* reliably hurts performance across a range of tasks — rude prompts produced measurably worse outputs. Adding *please* or other polite framing had a **modest and inconsistent** effect on frontier models like GPT-4, but a **more notable positive effect on smaller models**.
-
-- The takeaway: don't be rude to your LLM (it actually hurts), and being polite doesn't hurt and may help — especially if you're using a smaller or fine-tuned model.
-
-`pretty-please` mostly guards against the downside (accidental curtness/rudeness) rather than promising a magic uplift. Think of it as defensive prompt hygiene.
+`pretty-please` is defensive prompt hygiene, not a performance booster. It won't make Claude smarter. It just stops you from accidentally being rude to a language model, which, per the research, is a real and avoidable own-goal.
 
 ---
 
