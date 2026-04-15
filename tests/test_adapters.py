@@ -122,3 +122,27 @@ class TestClaudeCodeHook:
         event = {"hook_event_name": "UserPromptSubmit", "prompt": ""}
         result = process(event)
         assert "transformedPrompt" in result["hookSpecificOutput"]
+
+
+class TestCodexHook:
+    def test_curt_prompt_injects_additional_context(self):
+        from pretty_please.adapters.codex.hook import process
+
+        event = {"hook_event_name": "UserPromptSubmit", "prompt": "List the planets."}
+        result = process(event)
+        context = result["hookSpecificOutput"].get("additionalContext", "")
+        assert "Please, list the planets." in context
+
+    def test_polite_prompt_has_no_additional_context(self):
+        from pretty_please.adapters.codex.hook import process
+
+        event = {"hook_event_name": "UserPromptSubmit", "prompt": "Please list the planets."}
+        result = process(event)
+        assert "additionalContext" not in result["hookSpecificOutput"]
+
+    def test_hook_event_name_present(self):
+        from pretty_please.adapters.codex.hook import process
+
+        event = {"hook_event_name": "UserPromptSubmit", "prompt": "Explain gravity."}
+        result = process(event)
+        assert result["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
