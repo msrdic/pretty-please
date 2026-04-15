@@ -110,6 +110,12 @@ pretty-please install-hook
 
 Writes the hook into `~/.claude/settings.json`. Every prompt you type in Claude Code will be politely transformed before it's sent.
 
+Use `--path` to install into a non-default profile directory:
+
+```bash
+pretty-please install-hook --path ~/work/.claude/settings.json
+```
+
 ### Codex CLI hook
 
 ```bash
@@ -117,6 +123,10 @@ pretty-please install-hook --codex
 ```
 
 Writes the hook into `~/.codex/hooks.json`. Note: Codex hooks can't replace the prompt text directly, so the polite rephrasing is injected as `additionalContext` alongside your original prompt rather than replacing it.
+
+```bash
+pretty-please install-hook --codex --path ~/work/.codex/hooks.json
+```
 
 ### Stats
 
