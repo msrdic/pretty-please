@@ -136,13 +136,6 @@ Tone is detected by a small set of rules (no ML, no external deps):
 
 This project is a work in progress and contributions are very welcome! Open an issue or PR at [github.com/msrdic/pretty-please](https://github.com/msrdic/pretty-please).
 
-Ideas for future work:
-- Async support for adapters
-- Support for more SDK clients (Google Generative AI, Cohere, etc.)
-- Configurable politeness level (off / light / extra-courteous)
-- Fine-grained tone detection (e.g. distinguish brusque from aggressive)
-- Empirical benchmarking against the Yin et al. dataset
-
 ---
 
 ## License
