@@ -1,17 +1,16 @@
 """
-LiteLLM callback adapter.
+LiteLLM adapter.
 
-Registers a ``CustomLogger`` that transforms user messages before every
-LiteLLM completion call.
+Provides ``completion`` and ``acompletion`` wrappers around LiteLLM that
+transform user messages before the API call. This is the correct approach
+for library mode — LiteLLM's ``CustomLogger.log_pre_api_call`` is
+observability-only and mutations there do not affect the actual request.
 
 Usage::
 
-    from pretty_please.adapters.litellm import install
+    from pretty_please.adapters.litellm import completion, acompletion
 
-    install()  # call once at startup
-
-    import litellm
-    response = litellm.completion(
+    response = completion(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Explain recursion."}],
     )
@@ -33,18 +32,23 @@ def _polite_messages(messages: list[dict]) -> list[dict]:
     return result
 
 
-def install() -> None:
-    """Register the pretty-please callback with LiteLLM."""
+def completion(*, messages: list[dict], **kwargs):
+    """Drop-in for ``litellm.completion`` with polite message transformation."""
     try:
         import litellm
     except ImportError as exc:
         raise ImportError(
             "litellm package is required: pip install litellm"
         ) from exc
+    return litellm.completion(messages=_polite_messages(messages), **kwargs)
 
-    class PrettyPleaseCallback(litellm.integrations.custom_logger.CustomLogger):
-        def log_pre_api_call(self, model, messages, kwargs):
-            kwargs["messages"] = _polite_messages(messages)
 
-    litellm.callbacks = litellm.callbacks or []
-    litellm.callbacks.append(PrettyPleaseCallback())
+async def acompletion(*, messages: list[dict], **kwargs):
+    """Drop-in for ``litellm.acompletion`` with polite message transformation."""
+    try:
+        import litellm
+    except ImportError as exc:
+        raise ImportError(
+            "litellm package is required: pip install litellm"
+        ) from exc
+    return await litellm.acompletion(messages=_polite_messages(messages), **kwargs)
