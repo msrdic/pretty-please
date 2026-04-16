@@ -101,3 +101,10 @@ def show() -> None:
     print(f"  curt:          {by_tone['curt']:>6}")
     print(f"  neutral:       {by_tone['neutral']:>6}")
     print(f"Passed through:  {passed:>6}  {pct(passed)}")
+
+    from pretty_please.creature import get_profile
+
+    profile = get_profile(data)
+    print()
+    print(f"  {profile['name']}")
+    print(f"  {profile['description']}")
