@@ -44,6 +44,9 @@ Issues = "https://github.com/msrdic/pretty-please/issues"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "e2e: end-to-end tests that call real APIs (require API keys)",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["pretty_please"]
