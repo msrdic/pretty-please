@@ -1,5 +1,6 @@
 """Tests for pretty_please adapters (no real API calls)."""
 
+import importlib
 from unittest.mock import MagicMock, patch
 
 
@@ -86,7 +87,6 @@ class TestLiteLLMAdapter:
         mock_litellm = MagicMock()
         with patch.dict("sys.modules", {"litellm": mock_litellm}):
             from pretty_please.adapters import litellm as adapter
-            import importlib
 
             importlib.reload(adapter)
 
@@ -95,6 +95,42 @@ class TestLiteLLMAdapter:
             )
             call_messages = mock_litellm.completion.call_args[1]["messages"]
             assert call_messages[0]["content"].startswith("Please, ")
+
+    def test_completion_raises_when_litellm_missing(self):
+        with patch.dict("sys.modules", {"litellm": None}):
+            from pretty_please.adapters import litellm as adapter
+
+            importlib.reload(adapter)
+            try:
+                import pytest
+
+                with pytest.raises(ImportError, match="litellm package is required"):
+                    adapter.completion(
+                        model="gpt-4o",
+                        messages=[{"role": "user", "content": "Hello."}],
+                    )
+            finally:
+                importlib.reload(adapter)
+
+    def test_acompletion_raises_when_litellm_missing(self):
+        import asyncio
+
+        with patch.dict("sys.modules", {"litellm": None}):
+            from pretty_please.adapters import litellm as adapter
+
+            importlib.reload(adapter)
+            try:
+                import pytest
+
+                with pytest.raises(ImportError, match="litellm package is required"):
+                    asyncio.run(
+                        adapter.acompletion(
+                            model="gpt-4o",
+                            messages=[{"role": "user", "content": "Hello."}],
+                        )
+                    )
+            finally:
+                importlib.reload(adapter)
 
 
 class TestClaudeCodeHook:
@@ -150,3 +186,74 @@ class TestCodexHook:
         event = {"hook_event_name": "UserPromptSubmit", "prompt": "Explain gravity."}
         result = process(event)
         assert result["hookSpecificOutput"]["hookEventName"] == "UserPromptSubmit"
+
+
+class TestHookStatsIntegration:
+    """Verify that hook invocations actually record stats."""
+
+    def test_claude_code_hook_records_curt_stat(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        from pretty_please.adapters.claude_code.hook import process
+        from pretty_please.stats import get_stats
+
+        process({"hook_event_name": "UserPromptSubmit", "prompt": "List the planets."})
+        data = get_stats()
+        assert data["total"] == 1
+        assert data["by_tone"]["curt"] == 1
+
+    def test_claude_code_hook_records_polite_stat(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        from pretty_please.adapters.claude_code.hook import process
+        from pretty_please.stats import get_stats
+
+        process(
+            {
+                "hook_event_name": "UserPromptSubmit",
+                "prompt": "Please list the planets.",
+            }
+        )
+        data = get_stats()
+        assert data["total"] == 1
+        assert data["passed_through"] == 1
+
+    def test_codex_hook_records_curt_stat(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        from pretty_please.adapters.codex.hook import process
+        from pretty_please.stats import get_stats
+
+        process({"hook_event_name": "UserPromptSubmit", "prompt": "List the planets."})
+        data = get_stats()
+        assert data["total"] == 1
+        assert data["by_tone"]["curt"] == 1
+
+    def test_codex_hook_records_polite_stat(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        from pretty_please.adapters.codex.hook import process
+        from pretty_please.stats import get_stats
+
+        process(
+            {
+                "hook_event_name": "UserPromptSubmit",
+                "prompt": "Please list the planets.",
+            }
+        )
+        data = get_stats()
+        assert data["total"] == 1
+        assert data["passed_through"] == 1
+
+    def test_multiple_hook_calls_accumulate_stats(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        from pretty_please.adapters.claude_code.hook import process
+        from pretty_please.stats import get_stats
+
+        process({"hook_event_name": "UserPromptSubmit", "prompt": "List the planets."})
+        process(
+            {"hook_event_name": "UserPromptSubmit", "prompt": "Please explain this."}
+        )
+        process(
+            {"hook_event_name": "UserPromptSubmit", "prompt": "I need help with this."}
+        )
+        data = get_stats()
+        assert data["total"] == 3
+        assert data["transformed"] == 2
+        assert data["passed_through"] == 1

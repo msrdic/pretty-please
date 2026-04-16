@@ -60,6 +60,21 @@ class TestRecord:
         data = (tmp_path / "stats.log").read_bytes()
         assert data == bytes([0x00, 0x01, 0x02])
 
+    def test_concurrent_writes_all_land(self, tmp_path, monkeypatch):
+        import threading
+
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+
+        n = 100
+        threads = [threading.Thread(target=record, args=("curt",)) for _ in range(n)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        data = get_stats()
+        assert data["by_tone"]["curt"] == n
+
 
 class TestTrackedTransform:
     def test_returns_transformed_prompt(self):
