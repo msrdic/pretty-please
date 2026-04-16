@@ -41,6 +41,17 @@ class TestRecord:
         record("unknown")
         assert get_stats()["total"] == 0
 
+    def test_write_failure_is_ignored(self, monkeypatch, tmp_path):
+        monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
+        path = tmp_path / "stats.log"
+
+        def fail_open(*args, **kwargs):
+            raise OSError()
+
+        monkeypatch.setattr(type(path), "open", fail_open)
+        record("curt")
+        assert get_stats()["total"] == 0
+
     def test_log_file_is_binary(self, tmp_path, monkeypatch):
         monkeypatch.setenv("PRETTY_PLEASE_STATS_DIR", str(tmp_path))
         record("curt")

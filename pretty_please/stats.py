@@ -49,9 +49,13 @@ def record(tone: str) -> None:
     if byte is None:
         return
     path = _log_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("ab") as f:
-        f.write(bytes([byte]))
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("ab") as f:
+            f.write(bytes([byte]))
+    except OSError:
+        # Hooks should never fail just because telemetry can't be recorded.
+        return
 
 
 def get_stats() -> dict:
